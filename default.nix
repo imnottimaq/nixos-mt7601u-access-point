@@ -1,6 +1,6 @@
 { pkgs
 , lib
-, kernel ? pkgs.linuxPackages_latest.kernel
+, kernel ? pkgs.linuxPackages.kernel
 }:
 
 pkgs.stdenv.mkDerivation {
