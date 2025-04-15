@@ -3,12 +3,15 @@
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs, flake-utils, config }:
+  outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem
       (system:
-        let pkgs = nixpkgs.legacyPackages.${system}; in
+        let 
+	pkgs = nixpkgs.legacyPackages.${system};
+	inherit (nixpkgs) lib;
+	in
         {
-          packages.default = import ./default.nix { kernel = config.boot.kernelPackages.kernel };
+          packages.default = pkgs.callPackage ./default.nix { };
         }
       );
 }
