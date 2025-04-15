@@ -1,18 +1,50 @@
-## Installation
+# Installation
+## With flakes
+In your configuration's `flake.nix`:
+```
+inputs = {
+    mt7601u-access-point = {
+        url = "github:powwu/nixos-mt7601u-access-point";
+    };
+};
+```
+Then, add the package:
+```
+boot.extraModulePackages = [ inputs.mt7601u-access-point.packages.x86_64-linux.default ];
+```
+**You can only use the flake if you're using the `pkgs.linuxPackages.kernel` kernel.**
+
+## As a local package
 In your `configuration.nix`:
 ```
 let mt7601u-kernel-module = pkgs.callPackage ../pkgs/nixos-mt7601u-access-point/default.nix { kernel = config.boot.kernelPackages.kernel; }; in {
   boot.extraModulePackages = [ mt7601u-kernel-module ];
-}
+};
 ```
 Point the default.nix path to this repo. (in my case, it's in /etc/nixos/pkgs/, while my `configuration.nix` is in /etc/nixos/nixos/)
+**You may need to remove .git from the cloned directory.** Depending on how you reference the repository, you may need to add the `--impure` argument to your `nixos-rebuild`.
+
+## With boot.kernelPatches (not recommended)
+In your `configuration.nix`:
+```
+boot.kernelPatches = [
+  {
+    name = "mt7601u-access-point";
+    patch = (pkgs.fetchFromGitHub {
+      owner = "powwu";
+      repo = "nixos-mt7601u-access-point";
+      rev = "182783ad73a2b86c39ae7da511ec61892dc0fa32";
+      hash = "sha256-n+kpsvV2JOBPGPHVJVUnicybhn98rKNuw2QBKNuh/Ss=";
+     } + /access-point.patch );
+  }
+];
+```
+**This is not recommended** as the system will rebuild your entire kernel instead of only the module.
 
 ### Installation notes
-- **You may need to remove .git from the cloned directory.**
-- Depending on how you clone this repository, you may need to add the `--impure` argument to your `nixos-rebuild`.
 - You may have to set `coherent_pool=4M` as a command-line kernel parameter for proper functionality.
 
-## Usage
+# Usage
 Apply configuration and reboot (or use modprobe). From here, you should see it available for AP mode with `iw list` (may need to run `nix-shell -p iw`):
 ```
 Supported interface modes:
