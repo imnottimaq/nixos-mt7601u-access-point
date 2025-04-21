@@ -10,7 +10,7 @@ inputs = {
 ```
 Then, add the package:
 ```
-boot.extraModulePackages = [ inputs.mt7601u-access-point.packages.x86_64-linux.default ];
+boot.extraModulePackages = with config.boot.kernelPackages; [ inputs.mt7601u-access-point.packages.x86_64-linux.default ];
 ```
 **You can only use the flake if you're using the `pkgs.linuxPackages.kernel` kernel.** You may need to temporarily remove the extraModulePackages option if you're switching release channels, like going from stable to unstable or vice versa.
 
