@@ -12,7 +12,7 @@ Then, add the package:
 ```
 boot.extraModulePackages = [ inputs.mt7601u-access-point.packages.x86_64-linux.default ];
 ```
-**You can only use the flake if you're using the `pkgs.linuxPackages.kernel` kernel.**
+**You can only use the flake if you're using the `pkgs.linuxPackages.kernel` kernel.** You may need to temporarily remove the extraModulePackages option if you're switching release channels, like going from stable to unstable or vice versa.`
 
 ## As a local package
 In your `configuration.nix`:
@@ -21,8 +21,7 @@ let mt7601u-kernel-module = pkgs.callPackage ../pkgs/nixos-mt7601u-access-point/
   boot.extraModulePackages = [ mt7601u-kernel-module ];
 };
 ```
-Point the default.nix path to this repo. (in my case, it's in /etc/nixos/pkgs/, while my `configuration.nix` is in /etc/nixos/nixos/)
-**You may need to remove .git from the cloned directory.** Depending on how you reference the repository, you may need to add the `--impure` argument to your `nixos-rebuild`.
+Point the default.nix path to this repo. (in my case, it's in /etc/nixos/pkgs/, while my `configuration.nix` is in /etc/nixos/nixos/). **You may need to remove .git from the cloned directory.** Depending on how you reference the repository, you may need to add the `--impure` argument to your `nixos-rebuild`. If this happens, try using a relative path instead of an absolute one.
 
 ## With boot.kernelPatches (not recommended)
 In your `configuration.nix`:
@@ -39,7 +38,7 @@ boot.kernelPatches = [
   }
 ];
 ```
-**This is not recommended** as the system will rebuild your entire kernel instead of only the module.
+**This is not recommended** as the system will rebuild your entire kernel instead of only the module. However, it is the option with the lowest maintenance.
 
 ### Installation notes
 - You may have to set `coherent_pool=4M` as a command-line kernel parameter for proper functionality.

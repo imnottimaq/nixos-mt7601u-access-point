@@ -6,14 +6,12 @@
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem
       (system:
-        let 
-	pkgs = nixpkgs.legacyPackages.${system};
-	inherit (nixpkgs) lib;
-	in
-        {
-          packages.default = pkgs.callPackage ./default.nix { };
-        }
+        let
+	        pkgs = nixpkgs.legacyPackages.${system};
+	        inherit (nixpkgs) lib;
+	      in
+          {
+            packages.default = pkgs.callPackage ./default.nix { };
+          }
       );
 }
-
-
